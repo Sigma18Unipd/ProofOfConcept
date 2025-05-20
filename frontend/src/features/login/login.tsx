@@ -23,8 +23,8 @@ import { useForm } from "react-hook-form"
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters",
+  password: z.string({
+    required_error: "Password is required",
   }),
 })
 
