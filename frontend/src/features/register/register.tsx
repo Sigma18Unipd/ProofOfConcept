@@ -26,8 +26,14 @@ const formSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string({
     required_error: "Password is required",
-  }),
-})
+  }).min(8, "Your password must have at least 8 characters"),
+  password2: z.string({
+    required_error: "Re-enter your password",
+  }).min(8, "Your password must have at least 8 characters"),
+}).refine((data) => data.password === data.password2, {
+    message: "Passwords don't match",
+    path: ["password2"],
+});
 
 
 
@@ -37,22 +43,23 @@ function onSubmit(values: z.infer<typeof formSchema>) {
 
 
 
-export default function Login() {
+export default function Register() {
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
+      password2: "",
     },
   })
   return (
     <div className="flex flex-row min-h-screen justify-center items-center">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardTitle className="text-2xl">Register</CardTitle>
           <CardDescription>
-            Enter your credentials to login to your account.
+            Create your new account here!
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -84,9 +91,22 @@ export default function Login() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="password2"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="Re-enter your password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="flex justify-between">
-              <Button variant="outline" onClick={()=>{navigate('/register')}}>Register</Button> 
-              <Button type="submit">Login</Button> 
+              <Button variant="outline" onClick={()=>{navigate('/login')}}>Login</Button> 
+              <Button type="submit">Create your account</Button> 
             </div>
           </form>
         </Form>  
