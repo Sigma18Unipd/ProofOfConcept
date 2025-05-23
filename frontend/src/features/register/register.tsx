@@ -23,7 +23,7 @@ import { useNavigate } from "react-router";
 
 
 const formSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email("Invalid email address").nonempty("Email cannot be empty"),
   password: z.string({
     required_error: "Password is required",
   }).min(8, "Your password must have at least 8 characters"),
