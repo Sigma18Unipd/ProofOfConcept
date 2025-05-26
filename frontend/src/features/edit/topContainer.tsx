@@ -22,7 +22,26 @@ export function TopContainer() {
       <div className='flex gap-4'>
         <AlertDialog>
           <AlertDialogTrigger>
-            <BlurFade delay={0.25} inView>
+            <BlurFade delay={0.25 * 1} inView>
+              <Button variant={'destructive'}>Delete</Button>
+            </BlurFade>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure to remove this workflow?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete this automation from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <Button variant={'destructive'}>Continue</Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        <AlertDialog>
+          <AlertDialogTrigger>
+            <BlurFade delay={0.25 * 2} inView>
               <RainbowButton>AI Routine Builder</RainbowButton>
             </BlurFade>
           </AlertDialogTrigger>
@@ -40,26 +59,10 @@ export function TopContainer() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        <AlertDialog>
-          <AlertDialogTrigger>
-            <BlurFade delay={0.25 * 2} inView>
-              <Button variant={'destructive'}>Delete</Button>
-            </BlurFade>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure to remove this workflow?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete this automation from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <Button variant={'destructive'}>Continue</Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
         <BlurFade delay={0.25 * 3} inView>
+          <Button>Save</Button>
+        </BlurFade>
+        <BlurFade delay={0.25 * 4} inView>
           <Button>Run</Button>
         </BlurFade>
       </div>

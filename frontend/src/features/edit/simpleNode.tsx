@@ -1,14 +1,14 @@
 import { Handle, Position } from '@xyflow/react';
-import { Card, CardHeader } from '@/components/ui/card';
+import { Card, CardTitle } from '@/components/ui/card';
 
-export function SimpleNode({ data } : { data: { value: string }  }) {
+export function SimpleNode({ data } : { data: { title: string }  }) {
   return (
-    <Card className='w-[200px] h-[70px]'>
+    <Card style={{ padding: "20px" }} className='gap-2'>
       <Handle type='target' position={Position.Left} isConnectable />
-      <CardHeader>
-        {data.value}
-      </CardHeader>
-        
+      <CardTitle>
+        {data.title}
+      </CardTitle>
+        Descrizione del blocco
       <Handle type='source' position={Position.Right} id='output' isConnectable />
     </Card>
   );
