@@ -5,6 +5,7 @@ import "./index.css"
 import Login from "./features/login/login";
 import Landing from './features/landing/landing';
 import Register from './features/register/register';
+import Edit from './features/edit/edit';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
     path: "/register",
     element:  <Register />
   },
+  {
+    path: "/edit/:id",
+    element:  <Edit />
+  }
 ]);
 
 createRoot(document.getElementById('root')!).render(
