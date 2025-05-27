@@ -48,14 +48,14 @@ export function TopContainer() {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>AI Routine Builder</AlertDialogTitle>
-              <AlertDialogDescription className='flex flex-col space-y-50'>
+              <AlertDialogDescription>
                 From words to workflows, powered by AI.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <Textarea placeholder='Describe your routine here' className='resize-none' />
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <RainbowButton className='self-center'>Generate Workflow</RainbowButton>
+              <RainbowButton>Generate Workflow</RainbowButton>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
