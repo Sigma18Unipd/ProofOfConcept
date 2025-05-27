@@ -9,7 +9,7 @@ export function SimpleNode({ data } : { data: { title: string }  }) {
         {data.title}
       </CardTitle>
         Descrizione del blocco
-      <Handle type='source' position={Position.Right} id='output' isConnectable />
+      <Handle type='source' position={Position.Right} isConnectable />
     </Card>
   );
 }
