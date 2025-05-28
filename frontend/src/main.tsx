@@ -6,6 +6,7 @@ import Login from "./features/login/login";
 import Landing from './features/landing/landing';
 import Register from './features/register/register';
 import Edit from './features/edit/edit';
+import AutomationList from './features/automation_list/automation_list';
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "/edit/:id",
     element:  <Edit />
+  },
+  {
+    path: "/automation_list",
+    element:  <AutomationList />
   }
 ]);
 
