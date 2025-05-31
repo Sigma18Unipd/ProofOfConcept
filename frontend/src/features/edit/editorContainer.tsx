@@ -7,6 +7,8 @@ import {
   applyNodeChanges,
   type Node,
   type Edge,
+  type NodeChange,
+  type EdgeChange,
 } from '@xyflow/react';
 import { useCallback, useState } from 'react';
 import '@xyflow/react/dist/style.css';
@@ -46,9 +48,9 @@ const initialEdges: Edge[] = [
 export function EditorContainer() {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
-  const onNodesChange = useCallback(changes => setNodes(nds => applyNodeChanges(changes, nds)), [setNodes]);
-  const onEdgesChange = useCallback(changes => setEdges(eds => applyEdgeChanges(changes, eds)), [setEdges]);
-  const onConnect = useCallback(connection => setEdges(eds => addEdge(connection, eds)), [setEdges]);
+  const onNodesChange = useCallback((changes: NodeChange<Node>[]) => setNodes(nds => applyNodeChanges(changes, nds)), [setNodes]);
+  const onEdgesChange = useCallback((changes: EdgeChange<Edge>[]) => setEdges(eds => applyEdgeChanges(changes, eds)), [setEdges]);
+  const onConnect = useCallback((connection: any) => setEdges(eds => addEdge(connection, eds)), [setEdges]);
   return (
     <div
       style={{
