@@ -1,0 +1,13 @@
+services:
+  frontend:
+    build:
+      target: dev
+    volumes:
+      - ./frontend:/usr/src
+      - /usr/src/node_modules
+  backend:
+    build:
+      target: dev
+    volumes:
+      - ./backend:/usr/src
+      - /usr/src/node_modules
