@@ -32,8 +32,8 @@ docker compose -f docker-compose.yml up
 Docker will ignore the override file `docker-compose.override.yml` containing developement specific directives.
 Hot reloading will be disabled and the images will be smaller and self-contained.
 
-## Legacy 
-Old 
+# Legacy 
+Old instructions for manually bringing up single components. 
 ### Avviare frontend
 Per installare il frontend:
 ```bash
