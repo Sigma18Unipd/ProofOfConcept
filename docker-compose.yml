@@ -13,6 +13,8 @@ services:
       target: prod
     ports:
       - "3000:3000"
+    env_file:
+      - ./backend/.backend.env
   mongo:
     image: mongo:latest
     restart: always
