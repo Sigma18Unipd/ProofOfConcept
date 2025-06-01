@@ -4,10 +4,11 @@ import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-  //imports: [MongooseModule.forRoot('mongodb://mongo:27017/nest'), AuthModule, UsersModule],
-  imports: [AuthModule, UsersModule],
+  imports: [MongooseModule.forRoot('mongodb://mongo:27017/nest'), AuthModule, UsersModule],
+  //imports: [AuthModule, UsersModule],
   controllers: [AppController],
   providers: [
     {
