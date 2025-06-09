@@ -8,7 +8,7 @@ export default function Dashboard() {
         display: 'grid',
         gridTemplateColumns: '1fr',
         gridTemplateRows: '80px 1fr',
-        gridTemplateAreas: '"topContainer" "editorContainer"',
+        gridTemplateAreas: '"topContainer" "listContainer"',
         height: '100vh',
       }}>
       <TopContainer />

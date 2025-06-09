@@ -21,19 +21,19 @@ const initialNodes: Node[] = [
     id: 'node-1',
     type: 'simpleNode',
     position: { x: 0, y: 0 },
-    data: { title: 'Nodo1' },
+    data: { title: 'Nodo1', apiKey: 'ASD)_(#*()#$%&'},
   },
   {
     id: 'node-2',
     type: 'simpleNode',
     position: { x: 400, y: 0 },
-    data: { title: 'Nodo2' },
+    data: { title: 'Nodo2', apiKey: 'OPENAI_API_KEY'},
   },
   {
     id: 'node-3',
     type: 'simpleNode',
     position: { x: 400, y: 200 },
-    data: { title: 'Nodo3' },
+    data: { title: 'Nodo3', apiKey: 'ANOTHER_PIETROCROTTIAI_KEY' },
   },
 ];
 
