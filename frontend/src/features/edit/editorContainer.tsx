@@ -9,47 +9,25 @@ import {
   type Edge,
   type NodeChange,
   type EdgeChange,
+  type NodeTypes,
 } from '@xyflow/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import '@xyflow/react/dist/style.css';
-import { SimpleNode } from './simpleNode';
 
-const nodeTypes = { simpleNode: SimpleNode };
+export function EditorContainer(props: { nodesList: Node[]; edgesList: Edge[]; nodeTypes: NodeTypes; }) {
+  const [nodes, setNodes] = useState(props.nodesList);
+  const [edges, setEdges] = useState(props.edgesList);
+  useEffect(() => {
+    setNodes(props.nodesList);
+  }, [props.nodesList]);
+  useEffect(() => {
+    setEdges(props.edgesList);
+  }, [props.edgesList]);
 
-const initialNodes: Node[] = [
-  {
-    id: 'node-1',
-    type: 'simpleNode',
-    position: { x: 0, y: 0 },
-    data: { title: 'Nodo1', apiKey: 'ASD)_(#*()#$%&'},
-  },
-  {
-    id: 'node-2',
-    type: 'simpleNode',
-    position: { x: 400, y: 0 },
-    data: { title: 'Nodo2', apiKey: 'OPENAI_API_KEY'},
-  },
-  {
-    id: 'node-3',
-    type: 'simpleNode',
-    position: { x: 400, y: 200 },
-    data: { title: 'Nodo3', apiKey: 'ANOTHER_PIETROCROTTIAI_KEY' },
-  },
-];
-
-const initialEdges: Edge[] = [
-  {
-    id: 'edge-1',
-    source: 'node-1',
-    target: 'node-2',
-  },
-];
-
-export function EditorContainer() {
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
   const onNodesChange = useCallback((changes: NodeChange<Node>[]) => setNodes(nds => applyNodeChanges(changes, nds)), [setNodes]);
   const onEdgesChange = useCallback((changes: EdgeChange<Edge>[]) => setEdges(eds => applyEdgeChanges(changes, eds)), [setEdges]);
+  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onConnect = useCallback((connection: any) => setEdges(eds => addEdge(connection, eds)), [setEdges]);
   return (
     <div
@@ -62,7 +40,7 @@ export function EditorContainer() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        nodeTypes={nodeTypes}
+        nodeTypes={props.nodeTypes}
         colorMode='light'
         proOptions={{ hideAttribution: true }}
         fitView>
