@@ -11,8 +11,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { BlurFade } from '@/components/magicui/blur-fade';
+import { Textarea } from '@/components/ui/textarea';;
 
 export function TopContainer() {
   const { id } = useParams();
@@ -22,9 +21,7 @@ export function TopContainer() {
       <div className='flex gap-4'>
         <AlertDialog>
           <AlertDialogTrigger>
-            <BlurFade delay={0.25 * 1} inView>
-              <Button variant={'destructive'}>Delete</Button>
-            </BlurFade>
+            <Button variant={'destructive'}>Delete</Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -41,9 +38,7 @@ export function TopContainer() {
         </AlertDialog>
         <AlertDialog>
           <AlertDialogTrigger>
-            <BlurFade delay={0.25 * 2} inView>
-              <RainbowButton>AI Routine Builder</RainbowButton>
-            </BlurFade>
+            <RainbowButton>AI Routine Builder</RainbowButton>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -59,12 +54,8 @@ export function TopContainer() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        <BlurFade delay={0.25 * 3} inView>
-          <Button>Save</Button>
-        </BlurFade>
-        <BlurFade delay={0.25 * 4} inView>
-          <Button>Run</Button>
-        </BlurFade>
+        <Button>Save</Button>
+        <Button>Run</Button>
       </div>
     </div>
   );
