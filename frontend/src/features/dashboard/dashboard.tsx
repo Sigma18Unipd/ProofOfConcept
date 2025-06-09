@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlayIcon, PencilIcon } from "lucide-react";
 
-export default function Landing() {
+export default function Dashboard() {
   return (
     <div className="min-h-screen bg-white px-10 py-8">
       {/* Header */}
