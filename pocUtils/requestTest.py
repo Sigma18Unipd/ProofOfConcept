@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
 import uuid, boto3, json
+import sqlite3
 
 
 
@@ -23,11 +24,34 @@ def login():
   data = request.get_json()
   email = data['email']
   password = data['password']
-  if email == "test@test.com" and password == "test@test.com":
-    id = str(uuid.uuid4())
+  con = sqlite3.connect("data.db")
+  cur = con.cursor()
+  cur.execute("SELECT * FROM users WHERE email = ? AND password = ?", (email, password))
+  user = cur.fetchone()
+  con.close()
+  if user:
+    id = str(uuid.uuid4()) + email
     session[id] = email
     return jsonify({"authToken": id}), 200
-  return jsonify({"error": "Invalid credentials"}), 401
+  return jsonify({"error": "login error"}), 401
+
+
+
+
+@cross_origin()
+@app.route('/register', methods=['POST'])
+def register():
+  data = request.get_json()
+  email = data['email']
+  password = data['password']
+  con = sqlite3.connect("data.db")
+  cur = con.cursor()
+  cur.execute("INSERT INTO users (email, password) VALUES (?, ?)", (email, password))
+  con.commit()
+  con.close()
+  id = str(uuid.uuid4()) + email
+  session[id] = email
+  return jsonify({"authToken": id}), 200
 
 
 
@@ -112,7 +136,6 @@ def invoke_agent(prompt):
         chunk = event["chunk"]
         completion = completion + chunk["bytes"].decode()
     return completion
-
 
 
 

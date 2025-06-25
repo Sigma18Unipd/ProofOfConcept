@@ -33,13 +33,11 @@ const formSchema = z.object({
 
 
 function onSubmit(values: z.infer<typeof formSchema>) {
-  console.log(values);
   axios.post('http://localhost:5000/login', values)
     .then(response => {
       if (response.status !== 200) {
         throw new Error("Login failed");
       }
-      console.log("Login successful:", response.data);
       document.cookie = "authToken=" + response.data.authToken;
       window.location.href = "/dashboard";
     })
