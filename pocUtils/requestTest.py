@@ -1,11 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
 import uuid, boto3, json
 
 
 
 app = Flask(__name__)
-cors = CORS(app)
+cors = CORS(app, supports_credentials=True, origins='*')
 app.config['CORS_HEADERS'] = 'Content-Type'
 session = {}
 
@@ -13,16 +13,17 @@ session = {}
 
 @app.route('/', methods=['GET'])
 def debug():
-  return json.dumps(list(session.values())), 200
+  return jsonify({"session": list(session.keys())}), 200
 
 
- 
+
+@cross_origin()
 @app.route('/login', methods=['POST'])
 def login():
   data = request.get_json()
   email = data['email']
   password = data['password']
-  if email == "diomerda" and password == "diomerda":
+  if email == "test@test.com" and password == "test@test.com":
     id = str(uuid.uuid4())
     session[id] = email
     return jsonify({"authToken": id}), 200
@@ -30,12 +31,25 @@ def login():
 
 
 
-@app.route('/checklogin', methods=['POST'])
+@cross_origin()
+@app.route('/verifyToken', methods=['POST'])
 def checklogin():
   authToken = request.cookies.get('authToken')
-  if authToken in session.keys():
-    return 200
-  return 302
+  if authToken in session:
+    return jsonify({"success": True}), 200
+  return jsonify({"error": "Token non valido"}), 401
+
+
+
+@cross_origin()
+@app.route('/logout', methods=['POST'])
+def logout():
+  authToken = request.cookies.get('authToken')
+  if authToken in session:
+    session.pop(authToken, None)
+  response = make_response("ok", 200)
+  response.delete_cookie('authToken', path='/')
+  return response
 
 
 
@@ -113,6 +127,8 @@ def prompt():
         return jsonify({"response": response}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
 
 
 

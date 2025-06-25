@@ -1,4 +1,14 @@
 import { Button } from '@/components/ui/button';
+import axios from 'axios';
+
+
+function logout() {
+  axios.post("http://localhost:5000/logout", {}, { withCredentials: true }).then((res) => {
+    if (res.status === 200 ) {
+      window.location.href = "/login";
+    }
+  })
+}
 
 export function TopContainer() {
   return (
@@ -6,7 +16,7 @@ export function TopContainer() {
       <div>Welcome back, <span style={{ fontWeight: '500' }}>Email del tizio</span></div>
       <div className='flex gap-4'>
         <Button>Create a Routine</Button>
-        <Button variant={'destructive'}>Logout</Button>
+        <Button variant={'destructive'} onClick={() => logout()}>Logout</Button>
       </div>
     </div>
   );
