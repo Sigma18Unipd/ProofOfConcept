@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
-import uuid, boto3, json
-from llmQuery import get_workflow
-import sqlite3
-
+import uuid
+import json
+from llmQuery import process_prompt
+from db import get_db
 
 
 app = Flask(__name__)
@@ -11,6 +11,7 @@ cors = CORS(app, supports_credentials=True, origins='*')
 app.config['CORS_HEADERS'] = 'Content-Type'
 session = {}
 
+db = get_db("data.db")
 
 
 @app.route('/', methods=['GET'])
@@ -25,11 +26,7 @@ def login():
   data = request.get_json()
   email = data['email']
   password = data['password']
-  con = sqlite3.connect("data.db")
-  cur = con.cursor()
-  cur.execute("SELECT * FROM users WHERE email = ? AND password = ?", (email, password))
-  user = cur.fetchone()
-  con.close()
+  user = db.execute("SELECT * FROM users WHERE email = ? AND password = ?", (email, password))
   if user:
     id = str(uuid.uuid4()) + email
     session[id] = email
@@ -45,11 +42,7 @@ def register():
   data = request.get_json()
   email = data['email']
   password = data['password']
-  con = sqlite3.connect("data.db")
-  cur = con.cursor()
-  cur.execute("INSERT INTO users (email, password) VALUES (?, ?)", (email, password))
-  con.commit()
-  con.close()
+  db.execute("INSERT INTO users (email, password) VALUES (?, ?)", (email, password))
   id = str(uuid.uuid4()) + email
   session[id] = email
   return jsonify({"authToken": id}), 200
@@ -76,6 +69,29 @@ def logout():
   response.delete_cookie('authToken', path='/')
   return response
 
+@cross_origin
+@app.route('/api/flows', methods=['GET'])
+def get_workflows():
+  flows = db.fetchall("SELECT * FROM workflows")
+  return jsonify({"workfows": flows}), 200
+
+@cross_origin
+@app.route('/api/flows/prompt', methods=['POST'])
+def ai_flow():
+  data = request.get_json()
+  prompt = data.get('prompt', '')
+  if not prompt:
+    return jsonify({"error": "Prompt is required"}), 400
+  try:
+    response = process_prompt(prompt)
+    save_new_flow(data.get('name', 'New Flow'), data.get('description', ''), response)
+    return jsonify({"success": True}), 200
+  except Exception as e:
+    return jsonify({"error": str(e)}), 500
+
+def save_new_flow(name, description, contents):
+    db.execute("INSERT INTO workflows (name, description, contents) VALUES (?, ?, ?)",
+               (name, description, json.dumps(contents)))
 
 
 @cross_origin()
@@ -124,7 +140,7 @@ def prompt():
     if not prompt:
         return jsonify({"error": "Prompt is required"}), 400
     try:
-        response = get_workflow(prompt)
+        response = process_prompt(prompt)
         return jsonify({"response": response}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

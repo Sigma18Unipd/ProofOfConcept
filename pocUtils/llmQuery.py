@@ -118,7 +118,7 @@ def sanitize_response(flow: Dict[str, Any]) -> Dict[str, Any]:
     return flow
 
 
-def get_workflow(query):
+def process_prompt(query):
     raw = invoke_agent(query)
     try:
         flow = json.loads(raw)
