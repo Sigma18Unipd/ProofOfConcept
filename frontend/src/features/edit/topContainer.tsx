@@ -72,7 +72,6 @@ export function TopContainer(props: { setNodes: (nodes: Node[]) => void; setEdge
               <RainbowButton
                 onClick={async () => {
                   axios.post('http://localhost:5000/api', {}).then(response => {
-                    console.log(response.data);
                     props.setNodes(response.data.nodes);
                     props.setEdges(response.data.edges);
                   });

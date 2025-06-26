@@ -19,6 +19,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 
 
@@ -38,7 +39,13 @@ const formSchema = z.object({
 
 
 function onSubmit(values: z.infer<typeof formSchema>) {
-  console.log(values);
+  axios.post('http://localhost:5000/register', values)
+    .then(() => {
+      window.location.href = "/dashboard";
+    })
+    .catch(error => {
+      console.error("Login failed:", error);
+    });
 }
 
 
@@ -105,7 +112,7 @@ export default function Register() {
               )}
             />
             <div className="flex justify-between">
-              <Button variant="outline" onClick={()=>{navigate('/login')}}>Login</Button> 
+              <Button type="button" variant="outline" onClick={()=>{navigate('/login')}}>Login</Button> 
               <Button type="submit">Create your account</Button> 
             </div>
           </form>
