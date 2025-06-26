@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
 import uuid, boto3, json
+import llmQuery
 
 
 
@@ -96,22 +97,6 @@ def test():
 
 
 # ------------- AI STUFF -------------
-def invoke_agent(prompt):
-    print(f"Invoking agent with prompt: {prompt}")
-    agents_runtime_client = boto3.client("bedrock-agent-runtime", region_name="us-east-1")
-
-    response = agents_runtime_client.invoke_agent(
-        agentId="XKFFWBWHGM",
-        inputText=prompt,
-        agentAliasId="MGRMV9P6PM",
-        sessionId="session-1234567890",
-    )
-
-    completion = ""
-    for event in response.get("completion"):
-        chunk = event["chunk"]
-        completion = completion + chunk["bytes"].decode()
-    return completion
 
 
 
