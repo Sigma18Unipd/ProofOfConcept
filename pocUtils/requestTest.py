@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
 import uuid, boto3, json
-import llmQuery
+from llmQuery import get_workflow
 import sqlite3
 
 
@@ -124,7 +124,7 @@ def prompt():
     if not prompt:
         return jsonify({"error": "Prompt is required"}), 400
     try:
-        response = invoke_agent(prompt)
+        response = get_workflow(prompt)
         return jsonify({"response": response}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
