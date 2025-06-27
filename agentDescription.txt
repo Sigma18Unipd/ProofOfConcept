@@ -11,7 +11,7 @@ Here is the list of blocks that can be used:
 ```
 {   
   "id": "GENERATETHIS",
-  "type": "telegram-sendMessageFromBot",
+  "type": "telegramSendMessageFromBot",
   "data": {
     "title": "Telegram - Send bot message",
     "message": "GENERATETHIS"
@@ -24,7 +24,7 @@ Here is the list of blocks that can be used:
 
 {
   "id": "GENERATETHIS",
-  "type": "system-waitSeconds",
+  "type": "systemWaitSeconds",
   "data": {
     "title": "System - Wait (seconds)",
     "seconds": "GENERATETHIS"
@@ -37,7 +37,7 @@ Here is the list of blocks that can be used:
 
 {
   "id": "GENERATETHIS",
-  "type": "gmail-sendMessage",
+  "type": "gmailSendMessage",
   "data": {
     "title": "Gmail - Send Email",
     "recipientEmail: "",
