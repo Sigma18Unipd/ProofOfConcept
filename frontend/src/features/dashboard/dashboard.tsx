@@ -6,13 +6,15 @@ import axios from "axios";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+
+  //Verifica Auth
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (!document.cookie.includes('authToken')) {
       navigate('/login');
       return;
     }
-    axios.post("http://localhost:5000/verifyToken", {}, { withCredentials: true }).then((res) => {
+    axios.post("http://localhost:5000/api/verifyToken", {}, { withCredentials: true }).then((res) => {
       if (res.status !== 200 ) {
         navigate("/login");
       } else {
@@ -22,7 +24,6 @@ export default function Dashboard() {
       navigate("/login");
     });
   }, [navigate]);
-
   if (loading) return null;
 
   return (
