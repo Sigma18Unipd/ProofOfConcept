@@ -14,7 +14,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 
-export function SimpleNode({ data }: { data: { title: string, apiKey: string } }) {
+export function systemWaitSeconds({ data }: { data: { title: string, seconds: string } }) {
   return (
     <Card style={{ padding: '20px 10px 20px 20px' }} className='gap-2'>
       <Handle type='target' position={Position.Left} isConnectable />
@@ -32,8 +32,8 @@ export function SimpleNode({ data }: { data: { title: string, apiKey: string } }
             </AlertDialogHeader>
             Here you can configure the settings for this block.
             <div className='grid gap-2'>
-              <Label>API Key</Label>
-              <Input type='text' placeholder='Insert your API key' defaultValue={data.apiKey} />
+              <Label>Seconds</Label>
+              <Input type='text' placeholder='Insert your waiting time in seconds' defaultValue={data.seconds} />
             </div>
             <AlertDialogFooter>
               <AlertDialogAction>Save</AlertDialogAction>

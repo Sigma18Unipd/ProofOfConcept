@@ -6,7 +6,7 @@ note the presence of special keywords in the JSON:
 - "GENERATETHIS" means that you must fill that field randomly.
 - "IGNOREIFNOTPROVIDED" means that if the user does not provide a value, you should use an empty string for that field.
 - "ID" is the unique identifier for a block, and should be generated uniquely. 
-- "X" and "Y" are the horizontal and vertical positions of the block, respectively, and should be spaced appropriately to avoid overlap.
+- "X" and "Y" are the horizontal and vertical positions of the block, respectively, and should be spaced by at least 450 to avoid overlap.
 Here is the list of blocks that can be used:
 ```
 {   

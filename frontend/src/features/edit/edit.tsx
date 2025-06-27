@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import { EditorContainer } from './editorContainer';
 import { TopContainer } from './topContainer';
-import { SimpleNode } from './simpleNode';
 import {
   type Node,
   type Edge,
 } from '@xyflow/react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import axios from 'axios';
+import { systemWaitSeconds } from './nodes/systemWaitSeconds';
 
 
 
-const nodeTypes = { simpleNode: SimpleNode };
+const nodeTypes = { systemWaitSeconds: systemWaitSeconds, };
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
 
@@ -18,6 +21,28 @@ const initialEdges: Edge[] = [];
 export default function Edit() {
   const [currentNodes, setNodes] = useState<Node[]>(initialNodes);
   const [currentEdges, setEdges] = useState<Edge[]>(initialEdges);
+
+  //Verifica Auth
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!document.cookie.includes('authToken')) {
+      navigate('/login');
+      return;
+    }
+    axios.post("http://localhost:5000/api/verifyToken", {}, { withCredentials: true }).then((res) => {
+      if (res.status !== 200 ) {
+        navigate("/login");
+      } else {
+        setLoading(false);
+      }
+    }).catch(() => {
+      navigate("/login");
+    });
+  }, [navigate]);
+
+  if (loading) return null;
+
   return (
     <div
       style={{
@@ -28,7 +53,7 @@ export default function Edit() {
         height: '100vh',
       }}>
       <TopContainer setNodes={setNodes} setEdges={setEdges} />
-      <EditorContainer nodesList={currentNodes} edgesList={currentEdges} nodeTypes={nodeTypes} />
+      <EditorContainer setNodes={setNodes} setEdges={setEdges} nodesList={currentNodes} edgesList={currentEdges} nodeTypes={nodeTypes} />
     </div>
   );
 }

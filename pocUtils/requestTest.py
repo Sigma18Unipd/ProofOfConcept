@@ -24,7 +24,7 @@ def debug():
 @app.route('/login', methods=['POST'])
 def login():
   data = request.get_json()
-  email = data['email']
+  email = data['email'].lower()
   password = data['password']
   con = sqlite3.connect("data.db")
   cur = con.cursor()
@@ -44,7 +44,7 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
   data = request.get_json()
-  email = data['email']
+  email = data['email'].lower()
   password = data['password']
   con = sqlite3.connect("data.db")
   cur = con.cursor()
@@ -79,13 +79,11 @@ def logout():
 
 
 
-
 @cross_origin
 @app.route('/api/flows', methods=['POST'])
 def get_workflows():
   authToken = request.cookies.get('authToken')
   clientEmail = session.get(authToken)
-  clientEmail = "Mircodj03@gmail.com"
   con = sqlite3.connect("data.db")
   cur = con.cursor()
   con.commit()
@@ -97,9 +95,20 @@ def get_workflows():
 
 
 
-
-
-
+@cross_origin
+@app.route('/api/flows/<id>', methods=['POST'])
+def get_workflow_by_id(id):
+  authToken = request.cookies.get('authToken')
+  clientEmail = session.get(authToken)
+  con = sqlite3.connect("data.db")
+  cur = con.cursor()
+  con.commit()
+  flow = cur.execute("SELECT * FROM workflows WHERE id = ?", (id)).fetchone()
+  con.close()
+  if not flow or flow[1] != clientEmail:
+    return jsonify({"error": "Workflow not found or does not belong to the client"}), 404
+  flow = dict(zip(['id', 'clientEmail', 'name', 'contents'], flow))
+  return jsonify({"workflow": flow}), 200
 
 
 
@@ -112,30 +121,23 @@ def ai_flow():
     return jsonify({"error": "Prompt is required"}), 400
   try:
     response = process_prompt(prompt)
-    save_new_flow(data.get('name', 'New Flow'), data.get('description', ''), response)
-    return jsonify({"success": True}), 200
+    return jsonify(response), 200
   except Exception as e:
     return jsonify({"error": str(e)}), 500
-
-def save_new_flow(name, description, contents):
-    db.execute("INSERT INTO workflows (name, description, contents) VALUES (?, ?, ?)",
-               (name, description, json.dumps(contents)))
 
 
 
 @app.route('/api/prompt', methods=['POST'])
 def prompt():
-    data = request.get_json()
-    prompt = data.get('prompt', '')
-    if not prompt:
-        return jsonify({"error": "Prompt is required"}), 400
-    try:
-        response = process_prompt(prompt)
-        return jsonify({"response": response}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
+  data = request.get_json()
+  prompt = data.get('prompt', '')
+  if not prompt:
+    return jsonify({"error": "Prompt is required"}), 400
+  try:
+    response = process_prompt(prompt)
+    return jsonify({"response": response}), 200
+  except Exception as e:
+    return jsonify({"error": str(e)}), 500
 
 
 

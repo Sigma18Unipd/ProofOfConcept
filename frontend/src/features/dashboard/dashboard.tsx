@@ -5,9 +5,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function Dashboard() {
-  const navigate = useNavigate();
-
   //Verifica Auth
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (!document.cookie.includes('authToken')) {

@@ -13,8 +13,31 @@ import {
 } from '@xyflow/react';
 import { useCallback, useState, useEffect } from 'react';
 import '@xyflow/react/dist/style.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router';
+import { useParams } from 'react-router';
 
-export function EditorContainer(props: { nodesList: Node[]; edgesList: Edge[]; nodeTypes: NodeTypes; }) {
+
+
+export function EditorContainer(props: { setNodes: (nodes: Node[]) => void; setEdges: (edges: Edge[]) => void; nodesList: Node[]; edgesList: Edge[]; nodeTypes: NodeTypes; }) {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  useEffect(() => {
+    axios.post(`http://localhost:5000/api/flows/${id}`, {}, { withCredentials: true }).then((res) => {
+      console.log(res.data);
+      if (res.data.workflow.contents !== "") {
+        const palle = JSON.parse(res.data.workflow.contents);
+        props.setNodes(palle['nodes']);
+        props.setEdges(palle['edges']);
+      }
+    }).catch(() => {
+      navigate("/dashboard");
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, navigate]);
+
+
+
   const [nodes, setNodes] = useState(props.nodesList);
   const [edges, setEdges] = useState(props.edgesList);
   useEffect(() => {
@@ -23,9 +46,10 @@ export function EditorContainer(props: { nodesList: Node[]; edgesList: Edge[]; n
   useEffect(() => {
     setEdges(props.edgesList);
   }, [props.edgesList]);
-
   const onNodesChange = useCallback((changes: NodeChange<Node>[]) => setNodes(nds => applyNodeChanges(changes, nds)), [setNodes]);
   const onEdgesChange = useCallback((changes: EdgeChange<Edge>[]) => setEdges(eds => applyEdgeChanges(changes, eds)), [setEdges]);
+  
+
   
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onConnect = useCallback((connection: any) => setEdges(eds => addEdge(connection, eds)), [setEdges]);

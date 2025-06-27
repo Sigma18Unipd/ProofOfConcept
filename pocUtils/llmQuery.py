@@ -10,7 +10,7 @@ def invoke_agent(prompt):
     response = agents_runtime_client.invoke_agent(
         agentId="XKFFWBWHGM",
         inputText=prompt,
-        agentAliasId="13RCNRM4RF",
+        agentAliasId="ZJEFSE80VZ",
         sessionId=f"session-{uuid.uuid4()}",
     )
 
@@ -57,7 +57,7 @@ def add_field_if_missing(data, field, value=""):
             else:
                 add_json(data, "id", value)
         case "type":
-            add_json(data, "type", "system-waitSeconds" if value == "" else value)
+            add_json(data, "type", "systemWaitSeconds" if value == "" else value)
         case "position":
             global _position_counter
             _position_counter[0] += 200  
@@ -91,7 +91,7 @@ def check_title_message(data: Dict[str, Any]) -> Dict[str, Any]:
     add_field_if_missing(data, "message")
     return data
 
-@register_sanitizer("system-waitSeconds")
+@register_sanitizer("systemWaitSeconds")
 def wait_seconds_sanitizer(data: Dict[str, Any]) -> Dict[str, Any]:
     add_field_if_missing(data, "seconds", "10")
     return data

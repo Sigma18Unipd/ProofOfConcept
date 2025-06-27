@@ -12,21 +12,22 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { RainbowButton } from '@/components/magicui/rainbow-button';
-
 import axios from 'axios';
 import type { Edge, Node } from '@xyflow/react';
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 
 
 export function TopContainer(props: { setNodes: (nodes: Node[]) => void; setEdges: (edges: Edge[]) => void }) {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [promptValue, setPromptValue] = useState('');
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openAiRoutineDialog, setOpenAiRoutineDialog] = useState(false);
   return (
     <div className='flex items-center place-content-between' style={{ margin: '0 24px', gridArea: 'topContainer' }}>
-      <div>{id}</div>
+      <div><Button onClick= { ()=> { navigate("/dashboard") }}>Back to Dashboard</Button><span style={{ marginLeft: 20 }}>{id}</span></div>
       <div className='flex gap-4'>
         <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
           <DialogTrigger asChild>
@@ -62,7 +63,7 @@ export function TopContainer(props: { setNodes: (nodes: Node[]) => void; setEdge
             <div className='grid gap-4'>
               <div className='grid gap-2'>
                 <Label htmlFor='name-1'>Prompt</Label>
-                <Textarea placeholder='Describe your routine here' className='resize-none' />
+                <Textarea onChange={(e) => setPromptValue(e.target.value)} placeholder='Describe your routine here' className='resize-none' />
               </div>
             </div>
             <DialogFooter>
@@ -71,12 +72,15 @@ export function TopContainer(props: { setNodes: (nodes: Node[]) => void; setEdge
               </DialogClose>
               <RainbowButton
                 onClick={async () => {
-                  axios.post('http://localhost:5000/api', {}).then(response => {
-                    props.setNodes(response.data.nodes);
-                    props.setEdges(response.data.edges);
-                  });
-                  setOpenAiRoutineDialog(false);
-                }}>
+                  console.log("Prompt value:", promptValue);
+                  axios.post('http://localhost:5000/api/flows/prompt', { 'prompt': promptValue }, { withCredentials: true }).then(res => {
+                    console.log(res.data);
+                    props.setNodes(res.data.nodes);
+                    props.setEdges(res.data.edges);
+                  }).finally(() => {
+                    console.log("Workflow generated");
+                    setOpenAiRoutineDialog(false);
+                  })}}>
                 Generate Workflow
               </RainbowButton>
             </DialogFooter>
