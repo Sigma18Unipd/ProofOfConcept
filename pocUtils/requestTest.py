@@ -94,6 +94,8 @@ def get_workflow_by_id(id):
   flow = dict(zip(['id', 'clientEmail', 'name', 'contents'], flow))
   return jsonify({"workflow": flow}), 200
 
+
+
 @cross_origin
 @app.route('/api/flows/<id>/save', methods=['POST'])
 def save_workflow(id):
@@ -103,7 +105,6 @@ def save_workflow(id):
   name = data.get('name', '')
   contents = data.get('contents', {})
   print(f"id: {id}, clientEmail: {clientEmail}, name: {name}, contents: {contents}")
-
   if not clientEmail:
     return jsonify({"error": "Unauthorized"}), 401
   if not name:
@@ -120,13 +121,14 @@ def save_workflow(id):
     return jsonify({"error": str(e)}), 500
   return jsonify({"message": "Workflow saved successfully"}), 200
 
+
+
 @cross_origin
 @app.route('/api/flows/<id>/delete', methods=['DELETE'])
 def delete_workflow(id):
   authToken = request.cookies.get('authToken')
   clientEmail = session.get(authToken)
   flow = db.fetchone("SELECT * FROM workflows WHERE id = ?", (id,))
-  
   if not flow: 
     return jsonify({"error": "Workflow not found or does not belong to the client"}), 404
   if flow[1] != clientEmail:
@@ -137,6 +139,8 @@ def delete_workflow(id):
   except Exception as e:
     print(f"Error deleting workflow: {e}")
     return jsonify({"error": str(e)}), 500
+
+
 
 @cross_origin
 @app.route('/api/flows/prompt', methods=['POST'])
@@ -151,6 +155,8 @@ def ai_flow():
   except Exception as e:
     return jsonify({"error": str(e)}), 500
 
+
+
 @cross_origin
 @app.route('/api/prompt', methods=['POST'])
 def prompt():
@@ -164,17 +170,23 @@ def prompt():
   except Exception as e:
     return jsonify({"error": str(e)}), 500
   
+  
+  
 @cross_origin
 @app.route('/api/new', methods=['POST'])
 def new_workflow():
   authToken = request.cookies.get('authToken')
   clientEmail = session.get(authToken)
+  data = request.get_json()
+  name = data.get('name', '')
+  if not name:
+    return jsonify({"error": "Routine name is required"}), 400
   if not clientEmail:
     return jsonify({"error": "Unauthorized"}), 401
   new_id = str(uuid.uuid4())
   try:
     db.execute("INSERT INTO workflows (id, clientEmail, name, contents) VALUES (?, ?, ?, ?)",
-             (new_id, clientEmail, 'New Workflow', '{}'))
+             (new_id, clientEmail, name, '{}'))
     return jsonify({"id": new_id}), 200
   except Exception as e:
     print(f"Error creating new workflow: {e}")
