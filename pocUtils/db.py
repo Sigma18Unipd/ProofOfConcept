@@ -42,5 +42,5 @@ class DatabaseConnection:
             self._connection.close()
             self._connection = None
 
-def get_db(db_path="database.db"):
+def get_db(db_path="data.db"):
     return DatabaseConnection(db_path)

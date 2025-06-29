@@ -1,12 +1,11 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
 import uuid
-import json
 from llmQuery import process_prompt
-import sqlite3
+from db import get_db
 
 
-
+db = get_db("data.db")
 app = Flask(__name__)
 cors = CORS(app, supports_credentials=True, origins='*')
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -26,11 +25,7 @@ def login():
   data = request.get_json()
   email = data['email'].lower()
   password = data['password']
-  con = sqlite3.connect("data.db")
-  cur = con.cursor()
-  cur.execute("SELECT * FROM users WHERE email = ? AND password = ?", (email, password))
-  user = cur.fetchone()
-  con.close()
+  user = db.fetchone("SELECT * FROM users WHERE email = ? AND password = ?", (email, password))
   if user:
     id = str(uuid.uuid4()) + email
     session[id] = email
@@ -46,11 +41,7 @@ def register():
   data = request.get_json()
   email = data['email'].lower()
   password = data['password']
-  con = sqlite3.connect("data.db")
-  cur = con.cursor()
-  cur.execute("INSERT INTO users (email, password) VALUES (?, ?)", (email, password))
-  con.commit()
-  con.close()
+  db.execute("INSERT INTO users (email, password) VALUES (?, ?)", (email, password))
   id = str(uuid.uuid4()) + email
   session[id] = email
   return jsonify({"authToken": id}), 200
@@ -84,11 +75,7 @@ def logout():
 def get_workflows():
   authToken = request.cookies.get('authToken')
   clientEmail = session.get(authToken)
-  con = sqlite3.connect("data.db")
-  cur = con.cursor()
-  con.commit()
-  flows = cur.execute("SELECT * FROM workflows WHERE clientEmail = ?", (clientEmail,)).fetchall()
-  con.close()
+  flows = db.fetchall("SELECT * FROM workflows WHERE clientEmail = ?", (clientEmail,))
   flows = [dict(zip(['id', 'clientEmail', 'name', 'contents'], row)) for row in flows]
   print(flows)
   return jsonify({"workflows": flows}), 200
@@ -100,16 +87,11 @@ def get_workflows():
 def get_workflow_by_id(id):
   authToken = request.cookies.get('authToken')
   clientEmail = session.get(authToken)
-  con = sqlite3.connect("data.db")
-  cur = con.cursor()
-  con.commit()
-  flow = cur.execute("SELECT * FROM workflows WHERE id = ?", (id)).fetchone()
-  con.close()
+  flow = db.fetchone("SELECT * FROM workflows WHERE id = ?", (id))
   if not flow or flow[1] != clientEmail:
     return jsonify({"error": "Workflow not found or does not belong to the client"}), 404
   flow = dict(zip(['id', 'clientEmail', 'name', 'contents'], flow))
   return jsonify({"workflow": flow}), 200
-
 
 
 @cross_origin
