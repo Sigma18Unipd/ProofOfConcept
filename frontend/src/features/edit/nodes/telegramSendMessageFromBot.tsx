@@ -14,7 +14,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 
-export function telegramSendMessageFromBot({ data }: { data: { title: string, apiKey: string } }) {
+export function telegramSendMessageFromBot({ data }: { data: { title: string, apiKey: string, message?: string } }) {
   return (
     <Card style={{ padding: '20px 10px 20px 20px' }} className='gap-2'>
       <Handle type='target' position={Position.Left} isConnectable />
@@ -34,6 +34,10 @@ export function telegramSendMessageFromBot({ data }: { data: { title: string, ap
             <div className='grid gap-2'>
               <Label>API Key</Label>
               <Input type='password' placeholder='Enter your API key' defaultValue={data.apiKey} />
+            </div>
+            <div className='grid gap-2'>
+              <Label>Message</Label>
+              <Input type='text' placeholder='Enter your message' defaultValue={data.message} />
             </div>
             <AlertDialogFooter>
               <AlertDialogAction>Save</AlertDialogAction>
