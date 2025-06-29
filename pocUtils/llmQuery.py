@@ -60,10 +60,10 @@ def add_field_if_missing(data, field, value=""):
             add_json(data, "type", "systemWaitSeconds" if value == "" else value)
         case "position":
             global _position_counter
-            _position_counter[0] += 200  
+            _position_counter[0] += 400  
             if _position_counter[0] > 800:
                 _position_counter[0] = 0
-                _position_counter[1] += 200  
+                _position_counter[1] += 400  
             add_json(data, "position", {"x": _position_counter[0], "y": _position_counter[1]})
         case "data":
             add_json(data, "data", {})
