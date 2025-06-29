@@ -121,17 +121,22 @@ def save_workflow(id):
   return jsonify({"message": "Workflow saved successfully"}), 200
 
 @cross_origin
-@app.route('/api/flows/<id>/delete', methods=['POST'])
+@app.route('/api/flows/<id>/delete', methods=['DELETE'])
 def delete_workflow(id):
   authToken = request.cookies.get('authToken')
   clientEmail = session.get(authToken)
   flow = db.fetchone("SELECT * FROM workflows WHERE id = ?", (id,))
   
-  if not flow or flow[1] != clientEmail:
+  if not flow: 
     return jsonify({"error": "Workflow not found or does not belong to the client"}), 404
-  
-  db.execute("DELETE FROM workflows WHERE id = ?", (id,))
-  return jsonify({"message": "Workflow deleted successfully"}), 200
+  if flow[1] != clientEmail:
+    return jsonify({"error": "Unauthorized"}), 403
+  try: 
+    db.execute("DELETE FROM workflows WHERE id = ?", (id,))
+    return jsonify({"message": "Workflow deleted successfully"}), 200
+  except Exception as e:
+    print(f"Error deleting workflow: {e}")
+    return jsonify({"error": str(e)}), 500
 
 @cross_origin
 @app.route('/api/flows/prompt', methods=['POST'])

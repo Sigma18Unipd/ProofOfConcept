@@ -50,7 +50,17 @@ export function TopContainer(
               </DialogClose>
               <Button variant='destructive'
                 onClick={() => {
-                  setOpenDeleteDialog(false);
+                  axios.delete(`http://localhost:5000/api/flows/${id}/delete`, { withCredentials: true })
+                    .then(res => {
+                      console.log("Workflow deleted", res.data);
+                      navigate("/dashboard");
+                    })
+                    .catch(err => {
+                      console.error("Error deleting workflow:", err);
+                    })
+                    .finally(() => {
+                      setOpenDeleteDialog(false);
+                    });
                 }}>
                 Delete Workflow
               </Button>
