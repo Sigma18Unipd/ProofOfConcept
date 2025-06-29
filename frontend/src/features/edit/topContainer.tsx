@@ -103,7 +103,7 @@ export function TopContainer(
         </Dialog>
         <Button onClick={() => {
           const workflowData = {
-            name: id,
+            name: props.name,
             contents: JSON.stringify({
               nodes: props.nodes,
               edges: props.edges
