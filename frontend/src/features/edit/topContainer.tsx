@@ -19,7 +19,13 @@ import { useNavigate, useParams } from 'react-router';
 
 
 
-export function TopContainer(props: { setNodes: (nodes: Node[]) => void; setEdges: (edges: Edge[]) => void }) {
+export function TopContainer(
+  props: { 
+    setNodes: (nodes: Node[]) => void;
+    setEdges: (edges: Edge[]) => void;
+    nodes: Node[];
+    edges: Edge[];
+  }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [promptValue, setPromptValue] = useState('');
@@ -86,7 +92,23 @@ export function TopContainer(props: { setNodes: (nodes: Node[]) => void; setEdge
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        <Button>Save</Button>
+        <Button onClick={() => {
+          const workflowData = {
+            name: id,
+            contents: JSON.stringify({
+              nodes: props.nodes,
+              edges: props.edges
+            })
+          };
+          console.log("Saving workflow data:", workflowData);
+          axios.post(`http://localhost:5000/api/flows/${id}/save`, workflowData, { withCredentials: true }).then(res => {
+            console.log("Workflow saved", res.data);
+          }).catch(err => {
+            console.error("Error saving workflow:", err);
+          });
+        }}>
+          Save
+        </Button>
         <Button>Run</Button>
       </div>
     </div>

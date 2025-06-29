@@ -52,7 +52,7 @@ export default function Edit() {
         gridTemplateAreas: '"topContainer" "editorContainer"',
         height: '100vh',
       }}>
-      <TopContainer setNodes={setNodes} setEdges={setEdges} />
+      <TopContainer setNodes={setNodes} setEdges={setEdges} nodes={currentNodes} edges={currentEdges} />
       <EditorContainer setNodes={setNodes} setEdges={setEdges} nodesList={currentNodes} edgesList={currentEdges} nodeTypes={nodeTypes} />
     </div>
   );

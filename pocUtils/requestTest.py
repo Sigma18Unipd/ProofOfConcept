@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 import uuid
 from llmQuery import process_prompt
 from db import get_db
+import json
 
 
 db = get_db("data.db")
@@ -93,6 +94,44 @@ def get_workflow_by_id(id):
   flow = dict(zip(['id', 'clientEmail', 'name', 'contents'], flow))
   return jsonify({"workflow": flow}), 200
 
+@cross_origin
+@app.route('/api/flows/<id>/save', methods=['POST'])
+def save_workflow(id):
+  authToken = request.cookies.get('authToken')
+  clientEmail = session.get(authToken)
+  data = request.get_json()
+  name = data.get('name', '')
+  contents = data.get('contents', {})
+  print(f"id: {id}, clientEmail: {clientEmail}, name: {name}, contents: {contents}")
+
+  if not clientEmail:
+    return jsonify({"error": "Unauthorized"}), 401
+  if not name:
+    return jsonify({"error": "Missing name field"}), 400 # va ben anca se no ghe xe el nome
+  if isinstance(contents, str):
+    contents_str = contents
+  else:
+    contents_str = json.dumps(contents)
+  try:
+    db.execute("INSERT OR REPLACE INTO workflows (id, clientEmail, name, contents) VALUES (?, ?, ?, ?)",
+             (int(id), clientEmail, name, contents_str))
+  except Exception as e:
+    print(f"Error saving workflow: {e}")
+    return jsonify({"error": str(e)}), 500
+  return jsonify({"message": "Workflow saved successfully"}), 200
+
+@cross_origin
+@app.route('/api/flows/<id>/delete', methods=['POST'])
+def delete_workflow(id):
+  authToken = request.cookies.get('authToken')
+  clientEmail = session.get(authToken)
+  flow = db.fetchone("SELECT * FROM workflows WHERE id = ?", (id,))
+  
+  if not flow or flow[1] != clientEmail:
+    return jsonify({"error": "Workflow not found or does not belong to the client"}), 404
+  
+  db.execute("DELETE FROM workflows WHERE id = ?", (id,))
+  return jsonify({"message": "Workflow deleted successfully"}), 200
 
 @cross_origin
 @app.route('/api/flows/prompt', methods=['POST'])
