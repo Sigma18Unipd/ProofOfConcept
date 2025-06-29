@@ -76,8 +76,8 @@ def logout():
 def get_workflows():
   authToken = request.cookies.get('authToken')
   clientEmail = session.get(authToken)
-  flows = db.fetchall("SELECT * FROM workflows WHERE clientEmail = ?", (clientEmail,))
-  flows = [dict(zip(['id', 'clientEmail', 'name', 'contents'], row)) for row in flows]
+  flows = db.fetchall("SELECT id, clientEmail, name FROM workflows WHERE clientEmail = ?", (clientEmail,))
+  flows = [dict(zip(['id', 'clientEmail', 'name'], row)) for row in flows]
   print(flows)
   return jsonify({"workflows": flows}), 200
 
