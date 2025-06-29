@@ -88,7 +88,7 @@ def get_workflows():
 def get_workflow_by_id(id):
   authToken = request.cookies.get('authToken')
   clientEmail = session.get(authToken)
-  flow = db.fetchone("SELECT * FROM workflows WHERE id = ?", (id))
+  flow = db.fetchone("SELECT * FROM workflows WHERE id = ?", (id, ))
   if not flow or flow[1] != clientEmail:
     return jsonify({"error": "Workflow not found or does not belong to the client"}), 404
   flow = dict(zip(['id', 'clientEmail', 'name', 'contents'], flow))
@@ -114,7 +114,7 @@ def save_workflow(id):
     contents_str = json.dumps(contents)
   try:
     db.execute("INSERT OR REPLACE INTO workflows (id, clientEmail, name, contents) VALUES (?, ?, ?, ?)",
-             (int(id), clientEmail, name, contents_str))
+             (id, clientEmail, name, contents_str))
   except Exception as e:
     print(f"Error saving workflow: {e}")
     return jsonify({"error": str(e)}), 500
@@ -151,8 +151,7 @@ def ai_flow():
   except Exception as e:
     return jsonify({"error": str(e)}), 500
 
-
-
+@cross_origin
 @app.route('/api/prompt', methods=['POST'])
 def prompt():
   data = request.get_json()
@@ -164,7 +163,22 @@ def prompt():
     return jsonify({"response": response}), 200
   except Exception as e:
     return jsonify({"error": str(e)}), 500
-
+  
+@cross_origin
+@app.route('/api/new', methods=['POST'])
+def new_workflow():
+  authToken = request.cookies.get('authToken')
+  clientEmail = session.get(authToken)
+  if not clientEmail:
+    return jsonify({"error": "Unauthorized"}), 401
+  new_id = str(uuid.uuid4())
+  try:
+    db.execute("INSERT INTO workflows (id, clientEmail, name, contents) VALUES (?, ?, ?, ?)",
+             (new_id, clientEmail, 'New Workflow', '{}'))
+    return jsonify({"id": new_id}), 200
+  except Exception as e:
+    print(f"Error creating new workflow: {e}")
+    return jsonify({"error": str(e)}), 500
 
 
 # ------------- RUN -------------
