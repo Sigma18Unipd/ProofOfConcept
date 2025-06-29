@@ -9,10 +9,11 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { systemWaitSeconds } from './nodes/systemWaitSeconds';
+import { gmailSendMessage } from './nodes/gmailSendMessage';
+import { telegramSendMessageFromBot } from './nodes/telegramSendMessageFromBot';
 
 
-
-const nodeTypes = { systemWaitSeconds: systemWaitSeconds, };
+const nodeTypes = { systemWaitSeconds: systemWaitSeconds, gmailSendMessage: gmailSendMessage, telegramSendMessageFromBot: telegramSendMessageFromBot };
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
 
