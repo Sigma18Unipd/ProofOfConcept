@@ -17,14 +17,13 @@ import type { Edge, Node } from '@xyflow/react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
-
-
 export function TopContainer(
   props: { 
     setNodes: (nodes: Node[]) => void;
     setEdges: (edges: Edge[]) => void;
     nodes: Node[];
     edges: Edge[];
+    name: string;
   }) {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -33,7 +32,7 @@ export function TopContainer(
   const [openAiRoutineDialog, setOpenAiRoutineDialog] = useState(false);
   return (
     <div className='flex items-center place-content-between' style={{ margin: '0 24px', gridArea: 'topContainer' }}>
-      <div><Button onClick= { ()=> { navigate("/dashboard") }}>Back to Dashboard</Button><span style={{ marginLeft: 20 }}>{id}</span></div>
+      <div><Button onClick= { ()=> { navigate("/dashboard") }}>Back to Dashboard</Button><span style={{ marginLeft: 20 }}>{props.name}</span></div>
       <div className='flex gap-4'>
         <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
           <DialogTrigger asChild>

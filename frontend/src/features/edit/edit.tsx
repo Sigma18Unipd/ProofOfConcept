@@ -21,6 +21,7 @@ const initialEdges: Edge[] = [];
 export default function Edit() {
   const [currentNodes, setNodes] = useState<Node[]>(initialNodes);
   const [currentEdges, setEdges] = useState<Edge[]>(initialEdges);
+  const [name, setName] = useState<string>('');
 
   //Verifica Auth
   const navigate = useNavigate();
@@ -52,8 +53,8 @@ export default function Edit() {
         gridTemplateAreas: '"topContainer" "editorContainer"',
         height: '100vh',
       }}>
-      <TopContainer setNodes={setNodes} setEdges={setEdges} nodes={currentNodes} edges={currentEdges} />
-      <EditorContainer setNodes={setNodes} setEdges={setEdges} nodesList={currentNodes} edgesList={currentEdges} nodeTypes={nodeTypes} />
+      <TopContainer setNodes={setNodes} setEdges={setEdges} nodes={currentNodes} edges={currentEdges} name={name} />
+      <EditorContainer setNodes={setNodes} setEdges={setEdges} nodesList={currentNodes} edgesList={currentEdges} nodeTypes={nodeTypes} setName={setName} />
     </div>
   );
 }

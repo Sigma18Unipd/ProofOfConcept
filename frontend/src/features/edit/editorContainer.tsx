@@ -19,12 +19,13 @@ import { useParams } from 'react-router';
 
 
 
-export function EditorContainer(props: { setNodes: (nodes: Node[]) => void; setEdges: (edges: Edge[]) => void; nodesList: Node[]; edgesList: Edge[]; nodeTypes: NodeTypes; }) {
+export function EditorContainer(props: { setNodes: (nodes: Node[]) => void; setEdges: (edges: Edge[]) => void; nodesList: Node[]; edgesList: Edge[]; nodeTypes: NodeTypes; setName: (name: string) => void; }) {
   const { id } = useParams();
   const navigate = useNavigate();
   useEffect(() => {
     axios.post(`http://localhost:5000/api/flows/${id}`, {}, { withCredentials: true }).then((res) => {
       console.log(res.data);
+      props.setName(res.data.workflow.name);
       if (res.data.workflow.contents !== "") {
         const palle = JSON.parse(res.data.workflow.contents);
         props.setNodes(palle['nodes']);
