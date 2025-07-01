@@ -47,13 +47,41 @@ export function EditorContainer(props: { setNodes: (nodes: Node[]) => void; setE
   useEffect(() => {
     setEdges(props.edgesList);
   }, [props.edgesList]);
-  const onNodesChange = useCallback((changes: NodeChange<Node>[]) => setNodes(nds => applyNodeChanges(changes, nds)), [setNodes]);
-  const onEdgesChange = useCallback((changes: EdgeChange<Edge>[]) => setEdges(eds => applyEdgeChanges(changes, eds)), [setEdges]);
-  
 
-  
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onConnect = useCallback((connection: any) => setEdges(eds => addEdge(connection, eds)), [setEdges]);
+  const onNodesChange = useCallback(
+    (changes: NodeChange<Node>[]) => {
+      setNodes(nds => {
+        const updated = applyNodeChanges(changes, nds);
+        props.setNodes(updated); // <-- sincronizza col padre
+        return updated;
+      });
+    },
+    [props]
+  );
+
+  const onEdgesChange = useCallback(
+    (changes: EdgeChange<Edge>[]) => {
+      setEdges(eds => {
+        const updated = applyEdgeChanges(changes, eds);
+        props.setEdges(updated); // <-- sincronizza col padre
+        return updated;
+      });
+    },
+    [props]
+  );
+
+  const onConnect = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (connection: any) => {
+      setEdges(eds => {
+        const updated = addEdge(connection, eds);
+        props.setEdges(updated); // <-- sincronizza col padre
+        return updated;
+      });
+    },
+    [props]
+  );
+
   return (
     <div
       style={{

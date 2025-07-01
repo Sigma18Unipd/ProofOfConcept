@@ -3,6 +3,7 @@ from typing import Dict, Callable, Any, List
 from flask import Flask, request, jsonify, make_response
 import time
 import requests
+from collections import deque
 
 
 _workflow_handlers: Dict[str, Callable] = {}
@@ -59,15 +60,17 @@ def run(workflow_data):
 
 def get_execution_order(nodes: List[Dict], edges: List[Dict]) -> List[str]:
     """Determine the execution order of nodes based on edges"""
-
+    
     graph = {}
     in_degree = {}
     
+    # Initialize graph and in-degree for all nodes
     for node in nodes:
         node_id = node["id"]
         graph[node_id] = []
         in_degree[node_id] = 0
     
+    # Build the graph and calculate in-degrees
     for edge in edges:
         source = edge["source"]
         target = edge["target"]
@@ -75,17 +78,24 @@ def get_execution_order(nodes: List[Dict], edges: List[Dict]) -> List[str]:
             graph[source].append(target)
             in_degree[target] += 1
     
-    queue = [node_id for node_id in in_degree if in_degree[node_id] == 0]
+    # Use deque for better performance and sort nodes with 0 in-degree for consistency
+    queue = deque(sorted([node_id for node_id in in_degree if in_degree[node_id] == 0]))
     execution_order = []
     
     while queue:
-        current = queue.pop(0)
+        current = queue.popleft()
         execution_order.append(current)
         
-        for neighbor in graph[current]:
+        # Get neighbors and sort them for consistent ordering
+        neighbors = sorted(graph[current])
+        for neighbor in neighbors:
             in_degree[neighbor] -= 1
             if in_degree[neighbor] == 0:
                 queue.append(neighbor)
+    
+    # Check for cycles
+    if len(execution_order) != len(nodes):
+        raise ValueError("Cycle detected in workflow graph")
     
     return execution_order
 
