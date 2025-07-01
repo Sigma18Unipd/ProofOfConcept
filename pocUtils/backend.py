@@ -5,7 +5,6 @@ from llmQuery import process_prompt
 from db import get_db
 import runner
 import json
-import runner
 
 
 db = get_db("data.db")
@@ -146,14 +145,17 @@ def delete_workflow(id):
   
 @cross_origin
 @app.route('/api/flows/<id>/run', methods=['POST'])
-def get_workflow_by_id(id):
+def run_workflow(id):
   authToken = request.cookies.get('authToken')
   clientEmail = session.get(authToken)
-  flow = db.fetchone("SELECT * FROM workflows WHERE id = ?", (id, ))
-  if not flow or flow[1] != clientEmail:
-    return jsonify({"error": "Workflow not found or does not belong to the client"}), 404
-  flow = dict(zip(['id', 'clientEmail', 'name', 'contents'], flow))
-  runner.run_workflow(flow['contents'])
+  flow = db.fetchone("SELECT * FROM workflows WHERE id = ?", (id,))
+  print(f"Running workflow with id: {id}, clientEmail: {clientEmail}")
+  contents = json.loads(flow[3]) if flow[3] else {}
+  try:
+    return runner.run(contents)
+  except Exception as e:
+    print(f"Error running workflow: {e}")
+    return jsonify({"error": str(e)}), 500
 
 
 
@@ -169,6 +171,7 @@ def ai_flow():
     response = process_prompt(prompt)
     return jsonify(response), 200
   except Exception as e:
+    print(f"Error processing prompt: {e}")
     return jsonify({"error": str(e)}), 500
 
 
@@ -208,22 +211,6 @@ def new_workflow():
     print(f"Error creating new workflow: {e}")
     return jsonify({"error": str(e)}), 500
 
-
-@cross_origin
-@app.route('/api/flows/<id>/run', methods=['POST'])
-def run_workflow(id):
-  authToken = request.cookies.get('authToken')
-  clientEmail = session.get(authToken)
-  flow = db.fetchone("SELECT * FROM workflows WHERE id = ?", (id,))
-  # print flow
-  print(f"Running workflow with id: {id}, clientEmail: {clientEmail}")
-  contents = json.loads(flow[3]) if flow[3] else {}
-  try:
-    return runner.run(contents)
-  except Exception as e:
-    print(f"Error running workflow: {e}")
-    return jsonify({"error": str(e)}), 500
-  
 
 
 # ------------- RUN -------------

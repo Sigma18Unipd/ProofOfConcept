@@ -1,6 +1,10 @@
 import json
 from typing import Dict, Callable, Any, List
+from flask import Flask, request, jsonify, make_response
 import time
+import requests
+
+
 _workflow_handlers: Dict[str, Callable] = {}
 
 
@@ -11,13 +15,19 @@ def register_handler(workflow_type: str):
         return func
     return decorator
 
+
+
+
+
+
+
 def run(workflow_data):
-    
     nodes = workflow_data.get("nodes", [])
     edges = workflow_data.get("edges", [])
-    
-    # Build execution order based on edges
     execution_order = get_execution_order(nodes, edges)
+    
+    
+    
     
     results = {}
     for node_id in execution_order:
@@ -79,10 +89,31 @@ def get_execution_order(nodes: List[Dict], edges: List[Dict]) -> List[str]:
     
     return execution_order
 
+
+
+
+
+
 @register_handler("systemWaitSeconds")
 def handle_data_processing(workflow_data):
-    print(workflow_data)
     seconds = int(workflow_data.get("seconds", 0))
     print(f"Waiting for {seconds} seconds...")
     time.sleep(seconds)
     return {"status": "completed", "type": "systemWaitSeconds", "waited": seconds}
+
+
+
+@register_handler("telegramSendBotMessage")
+def handle_data_processing(workflow_data):
+    botToken = workflow_data.get("botToken", "")
+    chatId = workflow_data.get("chatId", "")
+    message = workflow_data.get("message", "")
+    print(f"Sending message to Telegram bot {botToken} in chat {chatId}: {message}")
+    url = f'https://api.telegram.org/bot{botToken}/sendMessage'
+    payload = {
+        'chat_id': chatId,
+        'text': message
+    }
+    response = requests.post(url, data=payload)
+    print(f"Telegram response: {response.status_code} - {response.text}")
+    return {"status": "completed", "type": "telegramSendBotMessage", "response": response.json()}

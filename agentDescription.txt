@@ -13,13 +13,13 @@ Here is the list of blocks that can be used:
   "id": "GENERATETHIS",
   "type": "telegramSendBotMessage",
   "data": {
-    "botToken": "GENERATETHIS",
-    "chatId": "GENERATETHIS",
-    "message": "GENERATETHIS"
+    "botToken": "",
+    "chatId": "",
+    "message": ""
   },
   "position": {
-    "x": "GENERATETHIS",
-    "y": "GENERATETHIS"
+    "x": "",
+    "y": ""
   }
 }
 
@@ -28,11 +28,11 @@ Here is the list of blocks that can be used:
   "type": "systemWaitSeconds",
   "data": {
     "title": "System - Wait (seconds)",
-    "seconds": "GENERATETHIS"
+    "seconds": ""
   },
   "position": {
-    "x": "GENERATETHIS",
-    "y": "GENERATETHIS"
+    "x": "",
+    "y": ""
   }
 }
 

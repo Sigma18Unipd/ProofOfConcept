@@ -33,7 +33,7 @@ export function telegramSendBotMessage({ data }: { data: { botToken: string, cha
             Here you can configure the settings for this block.
             <div className='grid gap-2'>
               <Label>Bot Token</Label>
-              <Input type='password' placeholder='Enter your Bot token' defaultValue={data.botToken} />
+              <Input type='text' placeholder='Enter your Bot token' defaultValue={data.botToken} />
             </div>
             <div className='grid gap-2'>
               <Label>Chat ID</Label>

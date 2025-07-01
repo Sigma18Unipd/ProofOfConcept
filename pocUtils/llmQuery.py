@@ -77,17 +77,14 @@ def check_basic_fields(data):
         add_field_if_missing(data, field)
     return data
 
-@register_sanitizer("telegram-sendMessageFromBot")
-@register_sanitizer("gmail-sendMessage")
-def api_key_filler(data: Dict[str, Any]) -> Dict[str, Any]:
-    sanitized = dict(data)
-    sanitized["apiKey"] = ""
-    return sanitized
 
-@register_sanitizer("telegram-sendMessageFromBot", "gmail-sendMessage")
-@register_sanitizer("gmail-sendMessage")
-def check_title_message(data: Dict[str, Any]) -> Dict[str, Any]:
-    add_field_if_missing(data, "title")
+
+
+
+@register_sanitizer("telegramSendBotMessage")
+def telegram_send_bot_message_sanitizer(data: Dict[str, Any]) -> Dict[str, Any]:
+    add_field_if_missing(data, "botToken")
+    add_field_if_missing(data, "chatId")
     add_field_if_missing(data, "message")
     return data
 
@@ -95,6 +92,13 @@ def check_title_message(data: Dict[str, Any]) -> Dict[str, Any]:
 def wait_seconds_sanitizer(data: Dict[str, Any]) -> Dict[str, Any]:
     add_field_if_missing(data, "seconds", "10")
     return data
+
+
+
+
+
+
+
 
 def sanitize_node(node: Dict[str, Any]) -> Dict[str, Any]:
     node_type = node.get("type")
