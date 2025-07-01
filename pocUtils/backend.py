@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 import uuid
 from llmQuery import process_prompt
 from db import get_db
+import runner
 import json
 import runner
 
@@ -206,6 +207,23 @@ def new_workflow():
   except Exception as e:
     print(f"Error creating new workflow: {e}")
     return jsonify({"error": str(e)}), 500
+
+
+@cross_origin
+@app.route('/api/flows/<id>/run', methods=['POST'])
+def run_workflow(id):
+  authToken = request.cookies.get('authToken')
+  clientEmail = session.get(authToken)
+  flow = db.fetchone("SELECT * FROM workflows WHERE id = ?", (id,))
+  # print flow
+  print(f"Running workflow with id: {id}, clientEmail: {clientEmail}")
+  contents = json.loads(flow[3]) if flow[3] else {}
+  try:
+    return runner.run(contents)
+  except Exception as e:
+    print(f"Error running workflow: {e}")
+    return jsonify({"error": str(e)}), 500
+  
 
 
 # ------------- RUN -------------

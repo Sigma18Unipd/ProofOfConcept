@@ -1,5 +1,88 @@
+import json
+from typing import Dict, Callable, Any, List
+import time
+_workflow_handlers: Dict[str, Callable] = {}
 
 
-def run_workflow(contents):
-    print("Running workflow with contents:")
-    print(contents)
+def register_handler(workflow_type: str):
+    """Decorator to register handlers for specific workflow types"""
+    def decorator(func: Callable):
+        _workflow_handlers[workflow_type] = func
+        return func
+    return decorator
+
+def run(workflow_data):
+    
+    nodes = workflow_data.get("nodes", [])
+    edges = workflow_data.get("edges", [])
+    
+    # Build execution order based on edges
+    execution_order = get_execution_order(nodes, edges)
+    
+    results = {}
+    for node_id in execution_order:
+        node = next((n for n in nodes if n["id"] == node_id), None)
+        if not node:
+            continue
+            
+        node_type = node.get("type")
+        node_data = node.get("data", {})
+        
+        # Create workflow item for the node
+        workflow_item = {
+            "type": node_type,
+            "id": node_id,
+            **node_data
+        }
+        
+        print(f"Executing node {node_id} of type {node_type}")
+        
+        # Execute the node
+        handler = _workflow_handlers.get(node_type)
+        if handler:
+            result = handler(workflow_item)
+            results[node_id] = result
+        else:
+            print(f"Warning: No handler registered for node type: {node_type}")
+            results[node_id] = {"status": "skipped", "type": node_type}
+    return results
+
+def get_execution_order(nodes: List[Dict], edges: List[Dict]) -> List[str]:
+    """Determine the execution order of nodes based on edges"""
+
+    graph = {}
+    in_degree = {}
+    
+    for node in nodes:
+        node_id = node["id"]
+        graph[node_id] = []
+        in_degree[node_id] = 0
+    
+    for edge in edges:
+        source = edge["source"]
+        target = edge["target"]
+        if source in graph and target in graph:
+            graph[source].append(target)
+            in_degree[target] += 1
+    
+    queue = [node_id for node_id in in_degree if in_degree[node_id] == 0]
+    execution_order = []
+    
+    while queue:
+        current = queue.pop(0)
+        execution_order.append(current)
+        
+        for neighbor in graph[current]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    return execution_order
+
+@register_handler("systemWaitSeconds")
+def handle_data_processing(workflow_data):
+    print(workflow_data)
+    seconds = int(workflow_data.get("seconds", 0))
+    print(f"Waiting for {seconds} seconds...")
+    time.sleep(seconds)
+    return {"status": "completed", "type": "systemWaitSeconds", "waited": seconds}
