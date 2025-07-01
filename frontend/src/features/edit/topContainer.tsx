@@ -118,7 +118,27 @@ export function TopContainer(
         }}>
           Save
         </Button>
-        <Button>Run</Button>
+        <Button onClick={() => {
+          const workflowData = {
+            name: props.name,
+            contents: JSON.stringify({
+              nodes: props.nodes,
+              edges: props.edges
+            })
+          };
+          console.log("Saving workflow data:", workflowData);
+          axios.post(`http://localhost:5000/api/flows/${id}/save`, workflowData, { withCredentials: true }).then(res => {
+            console.log("Workflow saved", res.data);
+            console.log("Workflow run initiated");
+            axios.post(`http://localhost:5000/api/flows/${id}/run`, { withCredentials: true }).then(res => {
+              console.log("Workflow run response:", res.data);
+            }).catch(err => {
+              console.error("Error running workflow:", err);
+            });
+          }).catch(err => {
+            console.error("Error saving workflow:", err);
+          });
+        }}>Run</Button>
       </div>
     </div>
   );
