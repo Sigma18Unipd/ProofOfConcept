@@ -19,7 +19,7 @@ export function systemWaitSeconds({ data }: { data: { title: string, seconds: st
     <Card style={{ padding: '20px 10px 20px 20px' }} className='gap-2'>
       <Handle type='target' position={Position.Left} isConnectable />
       <div className='flex justify-between items-center gap-6'>
-        <CardTitle>{data.title}</CardTitle>
+        <CardTitle>System - Wait (Seconds)</CardTitle>
         <AlertDialog>
           <AlertDialogTrigger>
             <Button variant='ghost' size='icon'>

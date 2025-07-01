@@ -4,6 +4,7 @@ import uuid
 from llmQuery import process_prompt
 from db import get_db
 import json
+import runner
 
 
 db = get_db("data.db")
@@ -139,6 +140,20 @@ def delete_workflow(id):
   except Exception as e:
     print(f"Error deleting workflow: {e}")
     return jsonify({"error": str(e)}), 500
+  
+  
+  
+@cross_origin
+@app.route('/api/flows/<id>/run', methods=['POST'])
+def get_workflow_by_id(id):
+  authToken = request.cookies.get('authToken')
+  clientEmail = session.get(authToken)
+  flow = db.fetchone("SELECT * FROM workflows WHERE id = ?", (id, ))
+  if not flow or flow[1] != clientEmail:
+    return jsonify({"error": "Workflow not found or does not belong to the client"}), 404
+  flow = dict(zip(['id', 'clientEmail', 'name', 'contents'], flow))
+  runner.run_workflow(flow['contents'])
+
 
 
 

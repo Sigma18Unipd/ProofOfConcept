@@ -11,9 +11,10 @@ Here is the list of blocks that can be used:
 ```
 {   
   "id": "GENERATETHIS",
-  "type": "telegramSendMessageFromBot",
+  "type": "telegramSendBotMessage",
   "data": {
-    "title": "Telegram - Send bot message",
+    "botToken": "GENERATETHIS",
+    "chatId": "GENERATETHIS",
     "message": "GENERATETHIS"
   },
   "position": {
@@ -35,20 +36,6 @@ Here is the list of blocks that can be used:
   }
 }
 
-{
-  "id": "GENERATETHIS",
-  "type": "gmailSendMessage",
-  "data": {
-    "title": "Gmail - Send Email",
-    "recipientEmail: "",
-    "object": "GENERATETHIS",
-    "body": "GENERATETHIS",
-  },
-  "position": {
-    "x": "GENERATETHIS",
-    "y": "GENERATETHIS"
-  }
-}
 ```
 To connect blocks with one-another, you will use edges. Each edge connects a source block to a target block, and has a unique identifier.
 An edge is represented as follows:
