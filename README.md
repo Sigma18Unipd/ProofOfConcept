@@ -1,19 +1,14 @@
-# SigmaBlocks
+# SigmaBlocks (Temporary name)
 A workflow automation solution
 
 ## Installation:
-Clone the repo: 
-```
-git clone https://github.com/Sigma18Unipd/SigmaBlocks.git
-cd SigmaBlocks
-```
 Spin up the container: 
 ```
 docker compose up
 ```
 The container will expose: 
 - The frontend on http://localhost:5173
-- The backend on http://localhost:3000
+- The backend on http://localhost:5000
 - A mongoDB instance on http://localhost:27017
 
 This is meant to be used in a developement environment, both frontend and backend will have hot-reloading enabled and any change made to the code will be reflected in real time.
