@@ -5,7 +5,10 @@ import Login from "./features/login/login";
 import Landing from './features/landing/landing';
 import Register from './features/register/register';
 import Edit from './features/edit/edit';
+<<<<<<< HEAD
 import Dashboard from './features/dashboard/dashboard';
+=======
+>>>>>>> parent of 1aec420 (inizio lista automazioni)
 
 const router = createBrowserRouter([
   {
@@ -23,10 +26,13 @@ const router = createBrowserRouter([
   {
     path: "/edit/:id",
     element:  <Edit />
+<<<<<<< HEAD
   },
   {
     path: "/dashboard",
     element:  <Dashboard />
+=======
+>>>>>>> parent of 1aec420 (inizio lista automazioni)
   }
 ]);
 
