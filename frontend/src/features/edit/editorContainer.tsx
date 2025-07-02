@@ -27,9 +27,9 @@ export function EditorContainer(props: { setNodes: (nodes: Node[]) => void; setE
       console.log(res.data);
       props.setName(res.data.workflow.name);
       if (res.data.workflow.contents !== "") {
-        const palle = JSON.parse(res.data.workflow.contents);
-        props.setNodes(palle['nodes']);
-        props.setEdges(palle['edges']);
+        const contents = JSON.parse(res.data.workflow.contents);
+        props.setNodes(contents['nodes']);
+        props.setEdges(contents['edges']);
       }
     }).catch(() => {
       navigate("/dashboard");
